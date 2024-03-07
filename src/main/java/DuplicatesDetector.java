@@ -1,34 +1,30 @@
 package main.java;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DuplicatesDetector {
 
-    public List<String> findDuplicateWords(String text) {
+    public List<String> findDuplicates(String text) {
+        List<String> duplicates = new ArrayList<>();
 
-        if (text == null || text.isEmpty()) {
-            return new ArrayList<>();
+        // split the text into sentences
+        String[] sentences = text.split("[.!?,]");
+
+        for (String sentence : sentences) {
+            // split the sentence into words
+            String[] words = sentence.split("\\s+");
+
+            // check each word if the next one is the same
+            for (int i = 0; i < words.length - 1; i++) {
+                String currentWord = words[i];
+                String nextWord = words[i + 1];
+
+                // check if currentWord and nextWord are equal
+                if (currentWord.equalsIgnoreCase(nextWord)) {
+                    duplicates.add(nextWord);
+                }
+            }
         }
-
-        //split text into Array with words
-        String[] words = text.split("\\s");
-
-        // create Map to store words and number of occurrences in text
-        Map<String, Integer> wordMap = new HashMap<>();
-
-        for (String word : words) {
-            // remove special characters at the beginning or ending of a word
-            // and convert to lower case
-            word = word.replaceAll("^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$", "").toLowerCase();
-
-            // add word to Map and update occurrences
-            wordMap.put(word, wordMap.getOrDefault(word, 0) + 1);
-        }
-
-        // return only keys from the map with a higher occurrence than 1
-        return wordMap.entrySet().stream()
-                .filter(word -> word.getValue() > 1)
-                .map(Map.Entry::getKey).toList();
+        return duplicates;
     }
 }
